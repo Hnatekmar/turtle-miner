@@ -21,6 +21,7 @@ local tx, tz = tonumber(tArgs[1]), tonumber(tArgs[2])
 local unloadX, unloadZ, unloadXDir, unloadZDir = 0, 0, 0, -1
 local fuelX, fuelZ, fuelXDir, fuelZDir = 0, 0, 1, 0
 local blacklistX, blacklistZ, blacklistXDir, blacklistZDir = 0, 0, -1, 0
+local initialX, initialZ, initialXDir, initialZDir = 0, 0, 0, 1
 
 -- List of items to ignore when searching for items to collect
 local searchItemsBlacklist = {}
@@ -339,6 +340,6 @@ goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
 unload()
 
 -- Return to the starting position
-goTo(0, 0, 0, 1, 0)
+goTo(initialX, 0, initialZ, initialXDir, initialZDir)
 
 -- End of program
