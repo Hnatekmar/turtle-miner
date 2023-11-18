@@ -204,7 +204,15 @@ local function unload()
     print("Unloading items...")
     for n=1,16 do
         turtle.select(n)
-        turtle.drop()
+        local nCount = turtle.getItemCount()
+        if nCount > 0 then
+            if not turtle.drop() then
+                print("Output chest is full, waiting for space to become available")
+                while not turtle.drop() do
+                    sleep(0.1)
+                end
+            end
+        end
     end
     turtle.select(1)
 end
@@ -316,15 +324,15 @@ end
 -- Main program
 print("Digging square " .. tx .. ", " .. tz .. "...")
 
--- Load blacklist
-goTo(blacklistX, 0, blacklistZ, blacklistXDir, blacklistZDir)
-fillSearchItemsBlacklist()
-
 -- Unload items and refuel
 goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
 unload()
 goTo(fuelX, 0, fuelZ, fuelXDir, fuelZDir)
 refuel()
+
+-- Load blacklist
+goTo(blacklistX, 0, blacklistZ, blacklistXDir, blacklistZDir)
+fillSearchItemsBlacklist()
 
 -- Move to target position
 goTo(tx, 0, tz, xDir, zDir)
