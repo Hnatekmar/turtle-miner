@@ -338,4 +338,7 @@ returnToHome()
 goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
 unload()
 
+-- Return to the starting position
+goTo(0, 0, 0, 1, 0)
+
 -- End of program
