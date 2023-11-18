@@ -109,6 +109,7 @@ function goTo(tx, ty, tz, txd, tzd)
 				sleep(0.1)
 			end
 		end
+	end
 	
 	if z > tz then
 		while zDir ~= -1 do
