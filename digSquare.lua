@@ -109,18 +109,6 @@ function goTo(tx, ty, tz, txd, tzd)
 				sleep(0.1)
 			end
 		end
-	elseif x < tx then
-		while xDir ~= 1 do
-			turnLeft()
-		end
-		while x < tx do
-			if turtle.forward() then
-				x = x + 1
-			elseif not (turtle.dig() or turtle.attack()) then
-				sleep(0.1)
-			end
-		end
-	end
 	
 	if z > tz then
 		while zDir ~= -1 do
@@ -144,6 +132,19 @@ function goTo(tx, ty, tz, txd, tzd)
 				sleep(0.1)
 			end
 		end	
+	end
+
+	if x < tx then
+		while xDir ~= 1 do
+			turnLeft()
+		end
+		while x < tx do
+			if turtle.forward() then
+				x = x + 1
+			elseif not (turtle.dig() or turtle.attack()) then
+				sleep(0.1)
+			end
+		end
 	end
 	
 	while y < ty do
