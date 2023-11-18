@@ -257,8 +257,8 @@ local function digSides(distanceFromTarget)
     end
 
     for i=1,4 do
-        item = turtle.detect()
-        if item then
+        local success, item = turtle.inspect()
+        if success then
             if not searchItemsBlacklist[item.name] then
                 if distanceFromTarget < reachSize then
                     -- Recursively dig to the side
