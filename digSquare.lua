@@ -28,137 +28,137 @@ local searchItemsBlacklist = {}
 
 -- Check if the turtle has any free slots left
 local function canCollect()	
-	local bFull = true
-	for n=1,16 do
-		local nCount = turtle.getItemCount(n)
-		if nCount == 0 then
-			bFull = false
-		end
-	end
-	
-	if bFull then
-		print( "No empty slots left." )
-		return false
-	end
-	return true
+    local bFull = true
+    for n=1,16 do
+        local nCount = turtle.getItemCount(n)
+        if nCount == 0 then
+            bFull = false
+        end
+    end
+
+    if bFull then
+        print( "No empty slots left." )
+        return false
+    end
+    return true
 end
 
 -- Try moving forward, if there is a block in the way, dig it
 local function tryForwards()
-	while not turtle.forward() do
-		if turtle.detect() then
-			if not turtle.dig() then
-				return false
-			end
-		elseif not turtle.attack() then
-			sleep(0.1)
-		end
-	end
-	
-	x = x + xDir
-	z = z + zDir
-	return true
+    while not turtle.forward() do
+        if turtle.detect() then
+            if not turtle.dig() then
+                return false
+            end
+        elseif not turtle.attack() then
+            sleep(0.1)
+        end
+    end
+
+    x = x + xDir
+    z = z + zDir
+    return true
 end
 
 -- Try moving down, if there is a block in the way, dig it
 local function tryDown()
-	while not turtle.down() do
-		if turtle.detectDown() then
-			if not turtle.digDown() then
-				return false
-			end
-		elseif not turtle.attackDown() then
-			sleep(0.1)
-		end
-	end
+    while not turtle.down() do
+        if turtle.detectDown() then
+            if not turtle.digDown() then
+                return false
+            end
+        elseif not turtle.attackDown() then
+            sleep(0.1)
+        end
+    end
 
-	y = y + 1
-	return true
+    y = y + 1
+    return true
 end
 
 -- Turn left and update the direction
 local function turnLeft()
-	turtle.turnLeft()
-	xDir, zDir = -zDir, xDir
+    turtle.turnLeft()
+    xDir, zDir = -zDir, xDir
 end
 
 -- Turn right and update the direction
 local function turnRight()
-	turtle.turnRight()
-	xDir, zDir = zDir, -xDir
+    turtle.turnRight()
+    xDir, zDir = zDir, -xDir
 end
 
 -- Move to the given position and direction
 function goTo(tx, ty, tz, txd, tzd)
-	while y > ty do
-		if turtle.up() then
-			y = y - 1
-		elseif not (turtle.digUp() or turtle.attackUp()) then
-			sleep(0.1)
-		end
-	end
+    while y > ty do
+        if turtle.up() then
+            y = y - 1
+        elseif not (turtle.digUp() or turtle.attackUp()) then
+            sleep(0.1)
+        end
+    end
 
-	if x > tx then
-		while xDir ~= -1 do
-			turnLeft()
-		end
-		while x > tx do
-			if turtle.forward() then
-				x = x - 1
-			elseif not (turtle.dig() or turtle.attack()) then
-				sleep(0.1)
-			end
-		end
-	end
-	
-	if z > tz then
-		while zDir ~= -1 do
-			turnLeft()
-		end
-		while z > tz do
-			if turtle.forward() then
-				z = z - 1
-			elseif not (turtle.dig() or turtle.attack()) then
-				sleep(0.1)
-			end
-		end
-	elseif z < tz then
-		while zDir ~= 1 do
-			turnLeft()
-		end
-		while z < tz do
-			if turtle.forward() then
-				z = z + 1
-			elseif not (turtle.dig() or turtle.attack()) then
-				sleep(0.1)
-			end
-		end	
-	end
+    if x > tx then
+        while xDir ~= -1 do
+            turnLeft()
+        end
+        while x > tx do
+            if turtle.forward() then
+                x = x - 1
+            elseif not (turtle.dig() or turtle.attack()) then
+                sleep(0.1)
+            end
+        end
+    end
 
-	if x < tx then
-		while xDir ~= 1 do
-			turnLeft()
-		end
-		while x < tx do
-			if turtle.forward() then
-				x = x + 1
-			elseif not (turtle.dig() or turtle.attack()) then
-				sleep(0.1)
-			end
-		end
-	end
-	
-	while y < ty do
-		if turtle.down() then
-			y = y + 1
-		elseif not (turtle.digDown() or turtle.attackDown()) then
-			sleep(0.1)
-		end
-	end
-	
-	while zDir ~= tzd or xDir ~= txd do
-		turnLeft()
-	end
+    if z > tz then
+        while zDir ~= -1 do
+            turnLeft()
+        end
+        while z > tz do
+            if turtle.forward() then
+                z = z - 1
+            elseif not (turtle.dig() or turtle.attack()) then
+                sleep(0.1)
+            end
+        end
+    elseif z < tz then
+        while zDir ~= 1 do
+            turnLeft()
+        end
+        while z < tz do
+            if turtle.forward() then
+                z = z + 1
+            elseif not (turtle.dig() or turtle.attack()) then
+                sleep(0.1)
+            end
+        end
+    end
+
+    if x < tx then
+        while xDir ~= 1 do
+            turnLeft()
+        end
+        while x < tx do
+            if turtle.forward() then
+                x = x + 1
+            elseif not (turtle.dig() or turtle.attack()) then
+                sleep(0.1)
+            end
+        end
+    end
+
+    while y < ty do
+        if turtle.down() then
+            y = y + 1
+        elseif not (turtle.digDown() or turtle.attackDown()) then
+            sleep(0.1)
+        end
+    end
+
+    while zDir ~= tzd or xDir ~= txd do
+        turnLeft()
+    end
 end
 
 -- Fill the list of items to ignore when searching for items to collect
@@ -173,6 +173,7 @@ local function fillSearchItemsBlacklist()
         turtle.select(n)
         local item = turtle.getItemDetail()
         if item then
+            print("Ignoring " .. item.name)
             searchItemsBlacklist[item.name] = true
         end
         turtle.drop()
@@ -236,19 +237,19 @@ end
 
 -- Finish quest by returning home (to the starting position)
 local function returnToHome()
-	print("Returning to unload items...")
+    print("Returning to unload items...")
     if y < 0 then
         -- Return to the middle of the square
         goTo(tx, y, tz, xDir, zDir)
     end
 
     -- Return to the surface
-	goTo(tx, -1, tz, xDir, zDir)
+    goTo(tx, -1, tz, xDir, zDir)
 
     -- Return to the starting position one block above the surface
-	goTo(unloadX, -1, unloadZ, unloadXDir, unloadZDir)
+    goTo(unloadX, -1, unloadZ, unloadXDir, unloadZDir)
     -- Descend to the starting position
-	goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
+    goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
 end
 
 -- Dig to the sides
@@ -261,7 +262,9 @@ local function digSides(distanceFromTarget)
     for i=1,4 do
         local success, item = turtle.inspect()
         if success then
+            print("Found " .. item.name)
             if not searchItemsBlacklist[item.name] then
+                print("Collecting " .. item.name)
                 if distanceFromTarget < reachSize then
                     -- Recursively dig to the side
                     if tryForwards() then
@@ -282,6 +285,8 @@ local function digSides(distanceFromTarget)
                 else
                     turtle.dig()
                 end
+            else
+                print("Ignoring " .. item.name)
             end
         end
 
@@ -305,7 +310,7 @@ local function digSquare()
         digSides(0)
     end
 end
-    
+
 
 -- Main program
 print("Digging square " .. tx .. ", " .. tz .. "...")
