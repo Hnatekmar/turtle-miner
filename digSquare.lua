@@ -1,5 +1,7 @@
 -- Desc: Dig straight down a given distance, when interesting blocks are found, dig to the sides limited by the given size
 
+local tArgs = { ... }
+
 -- Size of the square to dig
 local reachSize = 0
 
@@ -304,6 +306,7 @@ end
     
 
 -- Main program
+print("Digging square " .. tx .. ", " .. tz .. "...")
 
 -- Load blacklist
 goTo(blacklistX, 0, blacklistZ, blacklistXDir, blacklistZDir)
