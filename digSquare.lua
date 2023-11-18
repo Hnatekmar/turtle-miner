@@ -262,9 +262,9 @@ local function digSides(distanceFromTarget)
     for i=1,4 do
         local success, item = turtle.inspect()
         if success then
-            print("Found " .. item.name)
+            -- print("Found " .. item.name)
             if not searchItemsBlacklist[item.name] then
-                print("Collecting " .. item.name)
+                -- print("Collecting " .. item.name)
                 if distanceFromTarget < reachSize then
                     -- Recursively dig to the side
                     if tryForwards() then
@@ -285,8 +285,8 @@ local function digSides(distanceFromTarget)
                 else
                     turtle.dig()
                 end
-            else
-                print("Ignoring " .. item.name)
+            -- else
+            --     print("Ignoring " .. item.name)
             end
         end
 
