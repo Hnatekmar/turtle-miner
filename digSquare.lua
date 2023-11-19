@@ -165,6 +165,8 @@ end
 -- Fill the list of items to ignore when searching for items to collect
 -- with the items from the crate in front of the turtle
 local function fillSearchItemsBlacklist()
+    print("Filling blacklist...")
+
     for n=1,16 do
         turtle.select(n)
         turtle.suck()
@@ -223,6 +225,7 @@ local function refuel()
     local neededFuel = calculateMaxFuelNeeded()
     local fuelLevel = turtle.getFuelLevel()
     if fuelLevel == "unlimited" or fuelLevel >= neededFuel then
+        print("No need to refuel")
         return true
     end
 
@@ -246,7 +249,7 @@ end
 
 -- Finish quest by returning home (to the starting position)
 local function returnToHome()
-    print("Returning to unload items...")
+    print("Returning home...")
     if y < 0 then
         -- Return to the middle of the square
         goTo(tx, y, tz, xDir, zDir)
@@ -322,7 +325,9 @@ end
 
 
 -- Main program
-print("Digging square " .. tx .. ", " .. tz .. "...")
+print("Preparing for digging square " .. tx .. ", " .. tz .. "...")
+print("Fuel needed (max): " .. calculateMaxFuelNeeded())
+print("Fuel level: " .. turtle.getFuelLevel())
 
 -- Unload items and refuel
 goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
