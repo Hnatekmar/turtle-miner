@@ -3,7 +3,7 @@
 local tArgs = { ... }
 
 -- Size of the square to dig
-local reachSize = 0
+local reachSize = tonumber(tArgs[3])
 
 -- Used to calculate max fuel needed to dig a square of a given size
 -- 64 blocks to reach 0 and 64 to reach -64 (bedrock)
