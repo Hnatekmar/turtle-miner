@@ -4,6 +4,7 @@ from typing import List, Tuple, Optional
 
 import fastapi
 import pydantic
+from fastapi.openapi.models import Response
 from pydantic import BaseModel
 
 app = fastapi.FastAPI()
@@ -66,7 +67,10 @@ async def get_task():
     if position is None:
         return fastapi.Response(status_code=404)
     x, y = position
-    return str(x) + "," + str(y)
+    return fastapi.Response(
+        status_code=200,
+        content=f"{x},{y}"
+    )
 
 
 @app.post("/task")
