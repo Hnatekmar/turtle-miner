@@ -206,8 +206,7 @@ local function unload()
     print("Unloading items...")
     for n=1,16 do
         turtle.select(n)
-        local nCount = turtle.getItemCount()
-        if nCount > 0 then
+        while turtle.getItemCount() > 0 do
             if not turtle.drop() then
                 print("Output chest is full, waiting for space to become available")
                 while not turtle.drop() do
