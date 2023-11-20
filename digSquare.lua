@@ -29,7 +29,7 @@ local searchItemsBlacklist = {}
 
 
 -- Check if the turtle has any free slots left
-local function canCollect()	
+local function canCollect()
     local bFull = true
     for n=1,16 do
         local nCount = turtle.getItemCount(n)
