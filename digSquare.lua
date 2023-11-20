@@ -7,7 +7,8 @@ local reachSize = tonumber(tArgs[3])
 
 -- Used to calculate max fuel needed to dig a square of a given size
 -- 64 blocks to reach 0 and 64 to reach -64 (bedrock)
-local maxDepth = 64 * 2
+-- 32 blocks as a safety margin
+local maxDepth = 64 * 2 + 32
 
 -- Current position
 local x,y,z = 0,0,0
@@ -38,7 +39,6 @@ local function canCollect()
     end
 
     if bFull then
-        print( "No empty slots left." )
         return false
     end
     return true
@@ -258,15 +258,16 @@ local function returnToHome()
     goTo(tx, -1, tz, xDir, zDir)
 
     -- Return to the starting position one block above the surface
-    goTo(unloadX, -1, unloadZ, unloadXDir, unloadZDir)
+    goTo(initialX, -1, initialZ, initialXDir, initialZDir)
     -- Descend to the starting position
-    goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
+    goTo(initialX, 0, initialZ, initialXDir, initialZDir)
 end
 
 -- Dig to the sides
 local function digSides(distanceFromTarget)
     if not canCollect() then
         -- Skip digging to the sides if the inventory is full
+        print("Aborting search of side, no empty slots left.")
         return
     end
 
@@ -310,16 +311,19 @@ local function digSquare()
     -- Dig down
     while y < maxDepth do
         if not canCollect() then
-            return
+            print("No empty slots left.")
+            return false
         end
         if not tryDown() then
             print("Can't dig down")
-            return
+            return true
         end
 
         -- Dig to the sides
         digSides(0)
     end
+
+    return true
 end
 
 
@@ -341,8 +345,29 @@ fillSearchItemsBlacklist()
 -- Move to target position
 goTo(tx, 0, tz, xDir, zDir)
 
--- Dig down
-digSquare()
+-- Dig down until we reach bedrock or maxDepth
+while not digSquare() do
+    -- We have to return to the surface and unload items
+    print("Digging interrupted, returning to unload items...")
+
+    -- Remember where we were
+    lastY = y
+
+    -- Return to the starting position
+    returnToHome()
+
+    -- Unload items and refuel
+    goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
+    unload()
+    goTo(fuelX, 0, fuelZ, fuelXDir, fuelZDir)
+    refuel()
+
+    -- Move to target position
+    goTo(tx, 0, tz, xDir, zDir)
+
+    -- Descend to the last position
+    goTo(tx, lastY, tz, xDir, zDir)
+end
 
 -- Return to the starting position
 returnToHome()
