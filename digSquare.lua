@@ -424,14 +424,10 @@ local function digSides(distanceFromTarget)
                     local success, item = turtle.inspect()
                     if success and item.name == "computercraft:turtle_normal" then
                         -- There is a turtle in the way, wait for it to move
-                        print("Waiting for turtle to move...")
-                        while success and item.name == "computercraft:turtle_normal" do
-                            sleep(0.1)
-                            success, item = turtle.inspect()
-                        end
+                        print("Bumped into another turtle, continuing anyway...")
+                    else
+                        turtle.dig()
                     end
-
-                    turtle.dig()
                 end
             -- else
             --     print("Ignoring " .. item.name)
