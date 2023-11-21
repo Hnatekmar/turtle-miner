@@ -288,7 +288,7 @@ local function refuel()
                 sleep(0.1)
             end
         end
-        if not turtle.refuel() then
+        if not turtle.refuel(1) then
             print("Refueling failed, waiting for fuel to become available in slot 1")
             while turtle.getFuelLevel() < neededFuel and not turtle.refuel() do
                 sleep(0.1)
