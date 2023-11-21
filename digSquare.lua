@@ -162,6 +162,58 @@ function goTo(tx, ty, tz, txd, tzd)
     end
 end
 
+-- Failure fallback - sleeping indefinitely
+local function panic()
+    print("System failure, restart the computer to try again...")
+    while true do
+        sleep(10)
+    end
+end
+
+-- Callibrate the turtle's position and direction
+local function callibrate()
+    local foundExit = false
+    local exitXDir, exitZDir = 0,1
+
+    -- Try to find the exit
+    for i=1,4 do
+        local success, item = turtle.inspect()
+        if success then
+            -- There is an item - not the exit
+            if item.name ~= "minecraft:chest" then
+                -- There should be a chest on all sides except the exit
+                print("Found " .. item.name .. " on the side of starting position, this is wrong")
+                goTo(0, 0, 0, 0, 1)
+                -- Sleep indefinitely as the callibration cannot be completed
+                print("Callibration failed, aborting...")
+                panic()
+            end
+        else
+            -- There is no item - this could be the exit
+
+            if foundExit then
+                -- We found multiple exits
+                print("Found multiple exits from starting position, this is wrong")
+                goTo(0, 0, 0, 0, 1)
+                -- Sleep indefinitely as the callibration cannot be completed
+                print("Callibration failed, aborting...")
+                panic()
+            end
+
+            -- This is the exit
+            foundExit = true
+            exitXDir, exitZDir = xDir, zDir
+        end
+        turnLeft()
+    end
+
+    -- Turn to the exit
+    goTo(0, 0, 0, exitXDir, exitZDir)
+
+    -- Overwrite direction to match initial direction
+    xDir, zDir = initialXDir, initialZDir
+end
+
 -- Fill the list of items to ignore when searching for items to collect
 -- with the items from the crate in front of the turtle
 local function fillSearchItemsBlacklist()
@@ -331,6 +383,9 @@ end
 print("Preparing for digging square " .. tx .. ", " .. tz .. "...")
 print("Fuel needed (max): " .. calculateMaxFuelNeeded())
 print("Fuel level: " .. turtle.getFuelLevel())
+
+-- Callibrate the turtle's direction and validate the starting position
+callibrate()
 
 -- Unload items and refuel
 goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
