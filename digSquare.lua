@@ -233,6 +233,8 @@ local function fillSearchItemsBlacklist()
         end
         turtle.drop()
     end
+
+    turtle.select(1)
 end
 
 -- Calculate the max fuel needed to dig a square of a given size
