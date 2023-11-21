@@ -48,10 +48,19 @@ end
 local function tryForwards()
     while not turtle.forward() do
         if turtle.detect() then
-            if not turtle.dig() then
+            local success, item = turtle.inspect()
+            if success and item.name == "computercraft:turtle_normal" then
+                -- There is a turtle in the way, wait for it to move
+                print("Waiting for turtle to move...")
+                while success and item.name == "computercraft:turtle_normal" do
+                    sleep(0.1)
+                    success, item = turtle.inspect()
+                end
+            elseif not turtle.dig() then
                 return false
             end
-        elseif not turtle.attack() then
+        else
+        -- elseif not turtle.attack() then
             sleep(0.1)
         end
     end
@@ -65,10 +74,19 @@ end
 local function tryDown()
     while not turtle.down() do
         if turtle.detectDown() then
-            if not turtle.digDown() then
+            local success, item = turtle.inspectDown()
+            if success and item.name == "computercraft:turtle_normal" then
+                -- There is a turtle in the way, wait for it to move
+                print("Waiting for turtle to move...")
+                while success and item.name == "computercraft:turtle_normal" do
+                    sleep(0.1)
+                    success, item = turtle.inspectDown()
+                end
+            elseif not turtle.digDown() then
                 return false
             end
-        elseif not turtle.attackDown() then
+        else
+        -- elseif not turtle.attackDown() then
             sleep(0.1)
         end
     end
@@ -92,9 +110,18 @@ end
 -- Move to the given position and direction
 function goTo(tx, ty, tz, txd, tzd)
     while y > ty do
-        if turtle.up() then
+        local success, item = turtle.inspectUp()
+        if success and item.name == "computercraft:turtle_normal" then
+            -- There is a turtle in the way, wait for it to move
+            print("Waiting for turtle to move...")
+            while success and item.name == "computercraft:turtle_normal" do
+                sleep(0.1)
+                success, item = turtle.inspectUp()
+            end
+        elseif turtle.up() then
             y = y - 1
-        elseif not (turtle.digUp() or turtle.attackUp()) then
+        -- elseif not (turtle.digUp() or turtle.attackUp()) then
+        elseif not turtle.digUp() then
             sleep(0.1)
         end
     end
@@ -104,9 +131,18 @@ function goTo(tx, ty, tz, txd, tzd)
             turnLeft()
         end
         while x > tx do
-            if turtle.forward() then
+            local success, item = turtle.inspect()
+            if success and item.name == "computercraft:turtle_normal" then
+                -- There is a turtle in the way, wait for it to move
+                print("Waiting for turtle to move...")
+                while success and item.name == "computercraft:turtle_normal" do
+                    sleep(0.1)
+                    success, item = turtle.inspect()
+                end
+            elseif turtle.forward() then
                 x = x - 1
-            elseif not (turtle.dig() or turtle.attack()) then
+            -- elseif not (turtle.dig() or turtle.attack()) then
+            elseif not turtle.dig() then
                 sleep(0.1)
             end
         end
@@ -117,9 +153,18 @@ function goTo(tx, ty, tz, txd, tzd)
             turnLeft()
         end
         while z > tz do
-            if turtle.forward() then
+            local success, item = turtle.inspect()
+            if success and item.name == "computercraft:turtle_normal" then
+                -- There is a turtle in the way, wait for it to move
+                print("Waiting for turtle to move...")
+                while success and item.name == "computercraft:turtle_normal" do
+                    sleep(0.1)
+                    success, item = turtle.inspect()
+                end
+            elseif turtle.forward() then
                 z = z - 1
-            elseif not (turtle.dig() or turtle.attack()) then
+            -- elseif not (turtle.dig() or turtle.attack()) then
+            elseif not turtle.dig() then
                 sleep(0.1)
             end
         end
@@ -128,9 +173,18 @@ function goTo(tx, ty, tz, txd, tzd)
             turnLeft()
         end
         while z < tz do
-            if turtle.forward() then
+            local success, item = turtle.inspect()
+            if success and item.name == "computercraft:turtle_normal" then
+                -- There is a turtle in the way, wait for it to move
+                print("Waiting for turtle to move...")
+                while success and item.name == "computercraft:turtle_normal" do
+                    sleep(0.1)
+                    success, item = turtle.inspect()
+                end
+            elseif turtle.forward() then
                 z = z + 1
-            elseif not (turtle.dig() or turtle.attack()) then
+            -- elseif not (turtle.dig() or turtle.attack()) then
+            elseif not turtle.dig() then
                 sleep(0.1)
             end
         end
@@ -141,18 +195,36 @@ function goTo(tx, ty, tz, txd, tzd)
             turnLeft()
         end
         while x < tx do
-            if turtle.forward() then
+            local success, item = turtle.inspect()
+            if success and item.name == "computercraft:turtle_normal" then
+                -- There is a turtle in the way, wait for it to move
+                print("Waiting for turtle to move...")
+                while success and item.name == "computercraft:turtle_normal" do
+                    sleep(0.1)
+                    success, item = turtle.inspect()
+                end
+            elseif turtle.forward() then
                 x = x + 1
-            elseif not (turtle.dig() or turtle.attack()) then
+            -- elseif not (turtle.dig() or turtle.attack()) then
+            elseif not turtle.dig() then
                 sleep(0.1)
             end
         end
     end
 
     while y < ty do
-        if turtle.down() then
+        local success, item = turtle.inspectDown()
+        if success and item.name == "computercraft:turtle_normal" then
+            -- There is a turtle in the way, wait for it to move
+            print("Waiting for turtle to move...")
+            while success and item.name == "computercraft:turtle_normal" do
+                sleep(0.1)
+                success, item = turtle.inspectDown()
+            end
+        elseif turtle.down() then
             y = y + 1
-        elseif not (turtle.digDown() or turtle.attackDown()) then
+        -- elseif not (turtle.digDown() or turtle.attackDown()) then
+        elseif not turtle.digDown() then
             sleep(0.1)
         end
     end
@@ -349,6 +421,16 @@ local function digSides(distanceFromTarget)
                         turnLeft()
                     end
                 else
+                    local success, item = turtle.inspect()
+                    if success and item.name == "computercraft:turtle_normal" then
+                        -- There is a turtle in the way, wait for it to move
+                        print("Waiting for turtle to move...")
+                        while success and item.name == "computercraft:turtle_normal" do
+                            sleep(0.1)
+                            success, item = turtle.inspect()
+                        end
+                    end
+
                     turtle.dig()
                 end
             -- else
