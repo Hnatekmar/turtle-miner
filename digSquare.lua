@@ -27,6 +27,9 @@ local initialX, initialZ, initialXDir, initialZDir = 0, 0, 0, 1
 -- List of items to ignore when searching for items to collect
 local searchItemsBlacklist = {}
 
+-- Init random seed
+math.randomseed(os.time())
+
 
 -- Check if the turtle has any free slots left
 local function canCollect()
@@ -56,6 +59,8 @@ local function tryForwards()
                     sleep(0.1)
                     success, item = turtle.inspect()
                 end
+                -- Let's be safe and wait a bit before moving
+                sleep(math.random(1, 10) / 10)
             elseif not turtle.dig() then
                 return false
             end
@@ -82,6 +87,8 @@ local function tryDown()
                     sleep(0.1)
                     success, item = turtle.inspectDown()
                 end
+                -- Let's be safe and wait a bit before moving
+                sleep(math.random(1, 10) / 10)
             elseif not turtle.digDown() then
                 return false
             end
@@ -118,6 +125,8 @@ function goTo(tx, ty, tz, txd, tzd)
                 sleep(0.1)
                 success, item = turtle.inspectUp()
             end
+            -- Let's be safe and wait a bit before moving
+            sleep(math.random(1, 10) / 10)
         elseif turtle.up() then
             y = y - 1
         -- elseif not (turtle.digUp() or turtle.attackUp()) then
@@ -139,6 +148,8 @@ function goTo(tx, ty, tz, txd, tzd)
                     sleep(0.1)
                     success, item = turtle.inspect()
                 end
+                -- Let's be safe and wait a bit before moving
+                sleep(math.random(1, 10) / 10)
             elseif turtle.forward() then
                 x = x - 1
             -- elseif not (turtle.dig() or turtle.attack()) then
@@ -161,6 +172,8 @@ function goTo(tx, ty, tz, txd, tzd)
                     sleep(0.1)
                     success, item = turtle.inspect()
                 end
+                -- Let's be safe and wait a bit before moving
+                sleep(math.random(1, 10) / 10)
             elseif turtle.forward() then
                 z = z - 1
             -- elseif not (turtle.dig() or turtle.attack()) then
@@ -181,6 +194,8 @@ function goTo(tx, ty, tz, txd, tzd)
                     sleep(0.1)
                     success, item = turtle.inspect()
                 end
+                -- Let's be safe and wait a bit before moving
+                sleep(math.random(1, 10) / 10)
             elseif turtle.forward() then
                 z = z + 1
             -- elseif not (turtle.dig() or turtle.attack()) then
@@ -203,6 +218,8 @@ function goTo(tx, ty, tz, txd, tzd)
                     sleep(0.1)
                     success, item = turtle.inspect()
                 end
+                -- Let's be safe and wait a bit before moving
+                sleep(math.random(1, 10) / 10)
             elseif turtle.forward() then
                 x = x + 1
             -- elseif not (turtle.dig() or turtle.attack()) then
@@ -221,6 +238,8 @@ function goTo(tx, ty, tz, txd, tzd)
                 sleep(0.1)
                 success, item = turtle.inspectDown()
             end
+            -- Let's be safe and wait a bit before moving
+            sleep(math.random(1, 10) / 10)
         elseif turtle.down() then
             y = y + 1
         -- elseif not (turtle.digDown() or turtle.attackDown()) then
