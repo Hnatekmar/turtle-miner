@@ -47,21 +47,29 @@ local function canCollect()
     return true
 end
 
+-- Check if we are about to bump into another turtle
+local function checkTurtleBump()
+    local success, item = turtle.inspect()
+    if success and item.name == "computercraft:turtle_normal" then
+        -- There is a turtle in the way, wait for it to move
+        print("Waiting for turtle to move...")
+        while success and item.name == "computercraft:turtle_normal" do
+            sleep(0.1)
+            success, item = turtle.inspect()
+        end
+        -- Let's be safe and wait a bit before moving
+        sleep(math.random(1, 100) / 20)
+        return true
+    end
+
+    return false
+end
+
 -- Try moving forward, if there is a block in the way, dig it
 local function tryForwards()
     while not turtle.forward() do
         if turtle.detect() then
-            local success, item = turtle.inspect()
-            if success and item.name == "computercraft:turtle_normal" then
-                -- There is a turtle in the way, wait for it to move
-                print("Waiting for turtle to move...")
-                while success and item.name == "computercraft:turtle_normal" do
-                    sleep(0.1)
-                    success, item = turtle.inspect()
-                end
-                -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 100) / 20)
-            elseif not turtle.dig() then
+            if not checkTurtleBump() and not turtle.dig() then
                 return false
             end
         else
@@ -114,8 +122,89 @@ local function turnRight()
     xDir, zDir = zDir, -xDir
 end
 
+local function goToX(tx)
+    if x > tx then
+        while xDir ~= -1 do
+            if zDir == 1 then
+                turnRight()
+            else
+                turnLeft()
+            end
+        end
+        while x > tx do
+            if checkTurtleBump() then
+                -- There is a turtle in the way, wait for it to move
+            elseif turtle.forward() then
+                x = x - 1
+            -- elseif not (turtle.dig() or turtle.attack()) then
+            elseif not turtle.dig() then
+                sleep(0.1)
+            end
+        end
+    elseif x < tx then
+        while xDir ~= 1 do
+            if zDir == -1 then
+                turnRight()
+            else
+                turnLeft()
+            end
+        end
+        while x < tx do
+            if checkTurtleBump() then
+                -- There is a turtle in the way, wait for it to move
+            elseif turtle.forward() then
+                x = x + 1
+            -- elseif not (turtle.dig() or turtle.attack()) then
+            elseif not turtle.dig() then
+                sleep(0.1)
+            end
+        end
+    end
+end
+
+local function goToZ(tz)
+    if z > tz then
+        while zDir ~= -1 do
+            if xDir == 1 then
+                turnRight()
+            else
+                turnLeft()
+            end
+        end
+        while z > tz do
+            if checkTurtleBump() then
+                -- There is a turtle in the way, wait for it to move
+            elseif turtle.forward() then
+                z = z - 1
+            -- elseif not (turtle.dig() or turtle.attack()) then
+            elseif not turtle.dig() then
+                sleep(0.1)
+            end
+        end
+    elseif z < tz then
+        while zDir ~= 1 do
+            if xDir == -1 then
+                turnRight()
+            else
+                turnLeft()
+            end
+        end
+        while z < tz do
+            if checkTurtleBump() then
+                -- There is a turtle in the way, wait for it to move
+            elseif turtle.forward() then
+                z = z + 1
+            -- elseif not (turtle.dig() or turtle.attack()) then
+            elseif not turtle.dig() then
+                sleep(0.1)
+            end
+        end
+    end
+end
+
+
 -- Move to the given position and direction
-function goTo(tx, ty, tz, txd, tzd)
+local function goTo(tx, ty, tz, txd, tzd, firstX)
     while y > ty do
         local success, item = turtle.inspectUp()
         if success and item.name == "computercraft:turtle_normal" then
@@ -135,98 +224,12 @@ function goTo(tx, ty, tz, txd, tzd)
         end
     end
 
-    if x > tx then
-        while xDir ~= -1 do
-            turnLeft()
-        end
-        while x > tx do
-            local success, item = turtle.inspect()
-            if success and item.name == "computercraft:turtle_normal" then
-                -- There is a turtle in the way, wait for it to move
-                print("Waiting for turtle to move...")
-                while success and item.name == "computercraft:turtle_normal" do
-                    sleep(0.1)
-                    success, item = turtle.inspect()
-                end
-                -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 100) / 20)
-            elseif turtle.forward() then
-                x = x - 1
-            -- elseif not (turtle.dig() or turtle.attack()) then
-            elseif not turtle.dig() then
-                sleep(0.1)
-            end
-        end
-    end
-
-    if z > tz then
-        while zDir ~= -1 do
-            turnLeft()
-        end
-        while z > tz do
-            local success, item = turtle.inspect()
-            if success and item.name == "computercraft:turtle_normal" then
-                -- There is a turtle in the way, wait for it to move
-                print("Waiting for turtle to move...")
-                while success and item.name == "computercraft:turtle_normal" do
-                    sleep(0.1)
-                    success, item = turtle.inspect()
-                end
-                -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 100) / 20)
-            elseif turtle.forward() then
-                z = z - 1
-            -- elseif not (turtle.dig() or turtle.attack()) then
-            elseif not turtle.dig() then
-                sleep(0.1)
-            end
-        end
-    elseif z < tz then
-        while zDir ~= 1 do
-            turnLeft()
-        end
-        while z < tz do
-            local success, item = turtle.inspect()
-            if success and item.name == "computercraft:turtle_normal" then
-                -- There is a turtle in the way, wait for it to move
-                print("Waiting for turtle to move...")
-                while success and item.name == "computercraft:turtle_normal" do
-                    sleep(0.1)
-                    success, item = turtle.inspect()
-                end
-                -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 100) / 20)
-            elseif turtle.forward() then
-                z = z + 1
-            -- elseif not (turtle.dig() or turtle.attack()) then
-            elseif not turtle.dig() then
-                sleep(0.1)
-            end
-        end
-    end
-
-    if x < tx then
-        while xDir ~= 1 do
-            turnLeft()
-        end
-        while x < tx do
-            local success, item = turtle.inspect()
-            if success and item.name == "computercraft:turtle_normal" then
-                -- There is a turtle in the way, wait for it to move
-                print("Waiting for turtle to move...")
-                while success and item.name == "computercraft:turtle_normal" do
-                    sleep(0.1)
-                    success, item = turtle.inspect()
-                end
-                -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 100) / 20)
-            elseif turtle.forward() then
-                x = x + 1
-            -- elseif not (turtle.dig() or turtle.attack()) then
-            elseif not turtle.dig() then
-                sleep(0.1)
-            end
-        end
+    if firstX then
+        goToX(tx)
+        goToZ(tz)
+    else
+        goToZ(tz)
+        goToX(tx)
     end
 
     while y < ty do
@@ -274,7 +277,7 @@ local function callibrate()
             if item.name ~= "minecraft:chest" then
                 -- There should be a chest on all sides except the exit
                 print("Found " .. item.name .. " on the side of starting position, this is wrong")
-                goTo(0, 0, 0, 0, 1)
+                goTo(0, 0, 0, 0, 1, true)
                 -- Sleep indefinitely as the callibration cannot be completed
                 print("Callibration failed, aborting...")
                 panic()
@@ -285,7 +288,7 @@ local function callibrate()
             if foundExit then
                 -- We found multiple exits
                 print("Found multiple exits from starting position, this is wrong")
-                goTo(0, 0, 0, 0, 1)
+                goTo(0, 0, 0, 0, 1, true)
                 -- Sleep indefinitely as the callibration cannot be completed
                 print("Callibration failed, aborting...")
                 panic()
@@ -299,7 +302,7 @@ local function callibrate()
     end
 
     -- Turn to the exit
-    goTo(0, 0, 0, exitXDir, exitZDir)
+    goTo(0, 0, 0, exitXDir, exitZDir, true)
 
     -- Overwrite direction to match initial direction
     xDir, zDir = initialXDir, initialZDir
@@ -396,16 +399,16 @@ local function returnToHome()
     print("Returning home...")
     if y < 0 then
         -- Return to the middle of the square
-        goTo(tx, y, tz, xDir, zDir)
+        goTo(tx, y, tz, xDir, zDir, true)
     end
 
     -- Return to the surface
-    goTo(tx, -1, tz, xDir, zDir)
+    goTo(tx, -1, tz, xDir, zDir, true)
 
     -- Return to the starting position one block above the surface
-    goTo(initialX, -1, initialZ, initialXDir, initialZDir)
+    goTo(initialX, -1, initialZ, initialXDir, initialZDir, true)
     -- Descend to the starting position
-    goTo(initialX, 0, initialZ, initialXDir, initialZDir)
+    goTo(initialX, 0, initialZ, initialXDir, initialZDir, true)
 end
 
 -- Dig to the sides
@@ -487,17 +490,17 @@ print("Fuel level: " .. turtle.getFuelLevel())
 callibrate()
 
 -- Unload items and refuel
-goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
+goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir, true)
 unload()
-goTo(fuelX, 0, fuelZ, fuelXDir, fuelZDir)
+goTo(fuelX, 0, fuelZ, fuelXDir, fuelZDir, true)
 refuel()
 
 -- Load blacklist
-goTo(blacklistX, 0, blacklistZ, blacklistXDir, blacklistZDir)
+goTo(blacklistX, 0, blacklistZ, blacklistXDir, blacklistZDir, true)
 fillSearchItemsBlacklist()
 
 -- Move to target position
-goTo(tx, 0, tz, xDir, zDir)
+goTo(tx, 0, tz, xDir, zDir, false)
 
 -- Dig down until we reach bedrock or maxDepth
 while not digSquare() do
@@ -511,26 +514,26 @@ while not digSquare() do
     returnToHome()
 
     -- Unload items and refuel
-    goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
+    goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir, true)
     unload()
-    goTo(fuelX, 0, fuelZ, fuelXDir, fuelZDir)
+    goTo(fuelX, 0, fuelZ, fuelXDir, fuelZDir, true)
     refuel()
 
     -- Move to target position
-    goTo(tx, 0, tz, xDir, zDir)
+    goTo(tx, 0, tz, xDir, zDir, false)
 
     -- Descend to the last position
-    goTo(tx, lastY, tz, xDir, zDir)
+    goTo(tx, lastY, tz, xDir, zDir, false)
 end
 
 -- Return to the starting position
 returnToHome()
 
 -- Unload items
-goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir)
+goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir, true)
 unload()
 
 -- Return to the starting position
-goTo(initialX, 0, initialZ, initialXDir, initialZDir)
+goTo(initialX, 0, initialZ, initialXDir, initialZDir, true)
 
 -- End of program
