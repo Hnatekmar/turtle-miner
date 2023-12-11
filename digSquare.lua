@@ -31,6 +31,34 @@ local searchItemsBlacklist = {}
 math.randomseed(os.time())
 
 
+-- Turn left and update the direction
+local function turnLeft()
+    turtle.turnLeft()
+    xDir, zDir = -zDir, xDir
+end
+
+-- Turn right and update the direction
+local function turnRight()
+    turtle.turnRight()
+    xDir, zDir = zDir, -xDir
+end
+
+local function turnTo(txd, tzd)
+    while zDir ~= tzd or xDir ~= txd do
+        if zDir == 1 and txd == 1 then
+            turnRight()
+        elseif zDir == -1 and txd == -1 then
+            turnRight()
+        elseif xDir == -1 and tzd == 1 then
+            turnRight()
+        elseif xDir == 1 and tzd == -1 then
+            turnRight()
+        else
+            turnLeft()
+        end
+    end
+end
+
 -- Check if the turtle has any free slots left
 local function canCollect()
     local bFull = true
@@ -83,6 +111,29 @@ local function tryForwards()
     return true
 end
 
+-- Try moving back, if there is a block in the way turn around and dig it
+local function tryBackwards()
+    while not turtle.back() do
+        if turtle.detect() then
+            turnLeft()
+            turnLeft()
+            local failed = not checkTurtleBump() and not turtle.dig()
+            turnRight()
+            turnRight()
+            if failed then
+                return false
+            end
+        else
+        -- elseif not turtle.attack() then
+            sleep(0.1)
+        end
+    end
+
+    x = x - xDir
+    z = z - zDir
+    return true
+end
+
 -- Try moving down, if there is a block in the way, dig it
 local function tryDown()
     while not turtle.down() do
@@ -110,27 +161,9 @@ local function tryDown()
     return true
 end
 
--- Turn left and update the direction
-local function turnLeft()
-    turtle.turnLeft()
-    xDir, zDir = -zDir, xDir
-end
-
--- Turn right and update the direction
-local function turnRight()
-    turtle.turnRight()
-    xDir, zDir = zDir, -xDir
-end
-
 local function goToX(tx)
     if x > tx then
-        while xDir ~= -1 do
-            if zDir == 1 then
-                turnRight()
-            else
-                turnLeft()
-            end
-        end
+        turnTo(-1, 0)
         while x > tx do
             if checkTurtleBump() then
                 -- There is a turtle in the way, wait for it to move
@@ -142,13 +175,7 @@ local function goToX(tx)
             end
         end
     elseif x < tx then
-        while xDir ~= 1 do
-            if zDir == -1 then
-                turnRight()
-            else
-                turnLeft()
-            end
-        end
+        turnTo(1, 0)
         while x < tx do
             if checkTurtleBump() then
                 -- There is a turtle in the way, wait for it to move
@@ -164,13 +191,7 @@ end
 
 local function goToZ(tz)
     if z > tz then
-        while zDir ~= -1 do
-            if xDir == 1 then
-                turnRight()
-            else
-                turnLeft()
-            end
-        end
+        turnTo(0, -1)
         while z > tz do
             if checkTurtleBump() then
                 -- There is a turtle in the way, wait for it to move
@@ -182,13 +203,7 @@ local function goToZ(tz)
             end
         end
     elseif z < tz then
-        while zDir ~= 1 do
-            if xDir == -1 then
-                turnRight()
-            else
-                turnLeft()
-            end
-        end
+        turnTo(0, 1)
         while z < tz do
             if checkTurtleBump() then
                 -- There is a turtle in the way, wait for it to move
@@ -251,9 +266,7 @@ local function goTo(tx, ty, tz, txd, tzd, firstX)
         end
     end
 
-    while zDir ~= tzd or xDir ~= txd do
-        turnLeft()
-    end
+    turnTo(txd, tzd)
 end
 
 -- Failure fallback - sleeping indefinitely
@@ -431,16 +444,12 @@ local function digSides(distanceFromTarget)
                         digSides(distanceFromTarget + 1)
 
                         -- Return back to the original position and direction
-                        turnLeft()
-                        turnLeft()
-                        if not tryForwards() then
+                        if not tryBackwards() then
                             print("Something is blocking the way back")
-                            while not tryForwards() do
+                            while not tryBackwards() do
                                 sleep(0.1)
                             end
                         end
-                        turnLeft()
-                        turnLeft()
                     end
                 else
                     local success, item = turtle.inspect()
@@ -494,6 +503,7 @@ goTo(unloadX, 0, unloadZ, unloadXDir, unloadZDir, true)
 unload()
 goTo(fuelX, 0, fuelZ, fuelXDir, fuelZDir, true)
 refuel()
+print("Fuel level (after refuel): " .. turtle.getFuelLevel())
 
 -- Load blacklist
 goTo(blacklistX, 0, blacklistZ, blacklistXDir, blacklistZDir, true)
