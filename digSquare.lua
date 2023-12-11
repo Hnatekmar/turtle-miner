@@ -60,7 +60,7 @@ local function tryForwards()
                     success, item = turtle.inspect()
                 end
                 -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 10) / 10)
+                sleep(math.random(1, 100) / 20)
             elseif not turtle.dig() then
                 return false
             end
@@ -88,7 +88,7 @@ local function tryDown()
                     success, item = turtle.inspectDown()
                 end
                 -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 10) / 10)
+                sleep(math.random(1, 100) / 20)
             elseif not turtle.digDown() then
                 return false
             end
@@ -126,7 +126,7 @@ function goTo(tx, ty, tz, txd, tzd)
                 success, item = turtle.inspectUp()
             end
             -- Let's be safe and wait a bit before moving
-            sleep(math.random(1, 10) / 10)
+                sleep(math.random(1, 100) / 20)
         elseif turtle.up() then
             y = y - 1
         -- elseif not (turtle.digUp() or turtle.attackUp()) then
@@ -149,7 +149,7 @@ function goTo(tx, ty, tz, txd, tzd)
                     success, item = turtle.inspect()
                 end
                 -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 10) / 10)
+                sleep(math.random(1, 100) / 20)
             elseif turtle.forward() then
                 x = x - 1
             -- elseif not (turtle.dig() or turtle.attack()) then
@@ -173,7 +173,7 @@ function goTo(tx, ty, tz, txd, tzd)
                     success, item = turtle.inspect()
                 end
                 -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 10) / 10)
+                sleep(math.random(1, 100) / 20)
             elseif turtle.forward() then
                 z = z - 1
             -- elseif not (turtle.dig() or turtle.attack()) then
@@ -195,7 +195,7 @@ function goTo(tx, ty, tz, txd, tzd)
                     success, item = turtle.inspect()
                 end
                 -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 10) / 10)
+                sleep(math.random(1, 100) / 20)
             elseif turtle.forward() then
                 z = z + 1
             -- elseif not (turtle.dig() or turtle.attack()) then
@@ -219,7 +219,7 @@ function goTo(tx, ty, tz, txd, tzd)
                     success, item = turtle.inspect()
                 end
                 -- Let's be safe and wait a bit before moving
-                sleep(math.random(1, 10) / 10)
+                sleep(math.random(1, 100) / 20)
             elseif turtle.forward() then
                 x = x + 1
             -- elseif not (turtle.dig() or turtle.attack()) then
@@ -239,7 +239,7 @@ function goTo(tx, ty, tz, txd, tzd)
                 success, item = turtle.inspectDown()
             end
             -- Let's be safe and wait a bit before moving
-            sleep(math.random(1, 10) / 10)
+                sleep(math.random(1, 100) / 20)
         elseif turtle.down() then
             y = y + 1
         -- elseif not (turtle.digDown() or turtle.attackDown()) then
